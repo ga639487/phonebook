@@ -6,7 +6,7 @@
 
 #include IMPL
 
-#define OUT_FILE "orig.txt"
+#define OUT_FILE "opt.txt"
 #define DICT_FILE "./dictionary/words.txt"
 
 static double diff_in_second(struct timespec t1, struct timespec t2)
@@ -38,14 +38,14 @@ int main(int argc, char *argv[])
     }
 
     /* build the entry */
-    entry *pHead, *e;
-    pHead = (entry *) malloc(sizeof(entry));
-    printf("size of entry : %lu bytes\n", sizeof(entry));
-    e = pHead;
-    e->pNext = NULL;
+    lentry *pHead, *le;
+    pHead = (lentry *) malloc(sizeof(lentry));
+    printf("size of lentry : %lu bytes\n", sizeof(lentry));
+    le = pHead;
+    le->pNext = NULL;
 
 #if defined(__GNUC__)
-    __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
+    __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(lentry));
 #endif
     clock_gettime(CLOCK_REALTIME, &start);
     while (fgets(line, sizeof(line), fp)) {
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
             i++;
         line[i - 1] = '\0';
         i = 0;
-        e = append(line, e);
+        le = lappend(line, le);
     }
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time1 = diff_in_second(start, end);
@@ -61,31 +61,31 @@ int main(int argc, char *argv[])
     /* close file as soon as possible */
     fclose(fp);
 
-    e = pHead;
+    le = pHead;
 
     /* the givn last name to find */
     char input[MAX_LAST_NAME_SIZE] = "zyxel";
-    e = pHead;
+    le = pHead;
 
-    assert(findName(input, e) &&
+    assert(lfindName(input, le) &&
            "Did you implement findName() in " IMPL "?");
-    assert(0 == strcmp(findName(input, e)->lastName, "zyxel"));
+    assert(0 == strcmp(lfindName(input, le)->lastName, "zyxel"));
 
 #if defined(__GNUC__)
-    __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
+    __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(lentry));
 #endif
     /* compute the execution time */
     clock_gettime(CLOCK_REALTIME, &start);
-    findName(input, e);
+    lfindName(input, le);
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time2 = diff_in_second(start, end);
 
     FILE *output = fopen(OUT_FILE, "a");
-    fprintf(output, "append() findName() %lf %lf\n", cpu_time1, cpu_time2);
+    fprintf(output, "lappend() lfindName() %lf %lf\n", cpu_time1, cpu_time2);
     fclose(output);
 
-    printf("execution time of append() : %lf sec\n", cpu_time1);
-    printf("execution time of findName() : %lf sec\n", cpu_time2);
+    printf("execution time of lappend() : %lf sec\n", cpu_time1);
+    printf("execution time of lfindName() : %lf sec\n", cpu_time2);
 
     if (pHead->pNext) free(pHead->pNext);
     free(pHead);

@@ -1,5 +1,5 @@
 CC ?= gcc
-CFLAGS_common ?= -Wall -std=gnu99
+CFLAGS_common ?= -Wall -g -std=gnu99
 CFLAGS_orig = -O0
 CFLAGS_opt  = -O0
 
@@ -14,16 +14,17 @@ $(GIT_HOOKS):
 	@echo
 
 SRCS_common = main.c
+SRCS_common_opt = main_hash.c
 
 phonebook_orig: $(SRCS_common) phonebook_orig.c phonebook_orig.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_orig) \
 		-DIMPL="\"$@.h\"" -o $@ \
 		$(SRCS_common) $@.c
 
-phonebook_opt: $(SRCS_common) phonebook_opt.c phonebook_opt.h
-	$(CC) $(CFLAGS_common) $(CFLAGS_opt) \
+phonebook_opt: $(SRCS_common_opt) phonebook_opt.c phonebook_opt.h
+	$(CC) $(CFLAGS_common_opt) $(CFLAGS_opt) \
 		-DIMPL="\"$@.h\"" -o $@ \
-		$(SRCS_common) $@.c
+		$(SRCS_common_opt) $@.c
 
 run: $(EXEC)
 	echo 3 | sudo tee /proc/sys/vm/drop_caches

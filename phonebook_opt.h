@@ -5,7 +5,8 @@
 
 /* TODO: After modifying the original version, uncomment the following
  * line to set OPT properly */
-// #define OPT 1
+#define OPT 1
+
 typedef struct __PHONE_BOOK_ENTRY {
     char lastName[MAX_LAST_NAME_SIZE];
     char firstName[16];
@@ -20,7 +21,21 @@ typedef struct __PHONE_BOOK_ENTRY {
     struct __PHONE_BOOK_ENTRY *pNext;
 } entry;
 
-entry *findName(char lastName[], entry *pHead);
-entry *append(char lastName[], entry *e);
+typedef struct __LAST_NAME_ENTRY {
+    char lastName[MAX_LAST_NAME_SIZE];
+    struct __LAST_NAME_ENTRY *pNext;
+} lentry;
 
+lentry *lfindName(char lastName[], lentry *pHead);
+lentry *lappend(char lastName[], lentry *le);
+
+typedef struct __PHONE_BOOK_HASH {
+    char lastName[MAX_LAST_NAME_SIZE];
+    struct __PHONE_BOOK_HASH *pNext;
+} hash;
+
+hash *findName(char lastName[], hash *pHead);
+hash *append(char lastName[], hash *table);
+
+unsigned int hashfunction(char *str);
 #endif
